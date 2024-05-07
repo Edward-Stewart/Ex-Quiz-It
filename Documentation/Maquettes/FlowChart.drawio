@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net" modified="2024-04-30T13:30:00.677Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="puGcmDVf36WTTVCH12mQ" version="23.1.8" type="device">
+  <diagram name="Page-1" id="HQd-de8oFNgjCHat88Rk">
+    <mxGraphModel dx="2353" dy="1211" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-1" target="zXZC7gDi-qFupmcMp6eT-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-1" value="User connects to website" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="85" y="20" width="115" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-3" value="Displays Login/Register Page" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="65" y="110" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-5" target="zXZC7gDi-qFupmcMp6eT-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="250" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-15" value="NO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zXZC7gDi-qFupmcMp6eT-9">
+          <mxGeometry x="-0.3862" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-5" target="zXZC7gDi-qFupmcMp6eT-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-14" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zXZC7gDi-qFupmcMp6eT-13">
+          <mxGeometry x="-0.169" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-5" value="Does the user have an existing account ?" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="165" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-3" target="zXZC7gDi-qFupmcMp6eT-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-8" target="zXZC7gDi-qFupmcMp6eT-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-8" value="User creates an account using an email, their first and second names and a password" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="500" y="220" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.984;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-10" target="zXZC7gDi-qFupmcMp6eT-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="757.5" y="470" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="758" y="430" />
+              <mxPoint x="758" y="430" />
+              <mxPoint x="758" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-10" value="User&#39;s account is verified and is saved to the site&#39;s database" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="680" y="220" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-12" target="zXZC7gDi-qFupmcMp6eT-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-12" value="User logs in with their existing account which has been saved to the database" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="65" y="340" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-16" target="zXZC7gDi-qFupmcMp6eT-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-16" value="Displays Homepage containing various quizzes" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="287.5" y="450" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-17" target="zXZC7gDi-qFupmcMp6eT-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-21" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zXZC7gDi-qFupmcMp6eT-19">
+          <mxGeometry x="0.4119" y="-2" relative="1" as="geometry">
+            <mxPoint x="-15" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-17" target="zXZC7gDi-qFupmcMp6eT-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-17" value="Does the user wish to create an account" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="280" y="195" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-25" target="zXZC7gDi-qFupmcMp6eT-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-48" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zXZC7gDi-qFupmcMp6eT-34">
+          <mxGeometry x="-0.693" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-25" value="Does the user wish to play a quiz" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="280" y="540" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-27" target="zXZC7gDi-qFupmcMp6eT-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-27" value="The user connects to site as a guest" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="287.5" y="340" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-33" target="zXZC7gDi-qFupmcMp6eT-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-35" target="zXZC7gDi-qFupmcMp6eT-38">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="1040" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="825" />
+              <mxPoint x="480" y="1030" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-46" value="NO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zXZC7gDi-qFupmcMp6eT-45">
+          <mxGeometry x="-0.157" relative="1" as="geometry">
+            <mxPoint y="30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-33" value="User chooses a quiz of his liking and the quiz begins" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="287.5" y="680" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-35" target="zXZC7gDi-qFupmcMp6eT-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-47" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zXZC7gDi-qFupmcMp6eT-42">
+          <mxGeometry x="-0.7425" y="-2" relative="1" as="geometry">
+            <mxPoint x="2" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-35" value="Is the user connected with an account ?" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="280" y="770" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-37" target="zXZC7gDi-qFupmcMp6eT-38">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-37" value="User&#39;s score is saved to his profile on the database" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="287.5" y="910" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-44" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zXZC7gDi-qFupmcMp6eT-38" target="zXZC7gDi-qFupmcMp6eT-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-38" value="User is added to the list of the quiz&#39; players on the database" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="287.5" y="1000" width="155" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="zXZC7gDi-qFupmcMp6eT-39" value="Fin" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="315" y="1100" width="100" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
