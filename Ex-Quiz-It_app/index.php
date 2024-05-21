@@ -16,13 +16,17 @@ if (isset($_GET['action'])){
         case 'start_page' :
             start_page();
             break;
+        case 'quiz' :
+            quiz();
+            break;    
+        case 'admin_page' :
+            admin_page();
+            break;    
         default :
             home();
             break;
-
     }
-}else
-{
-    header("Location: index.php?action=home.php");
+}else{
+    home();
 }
 

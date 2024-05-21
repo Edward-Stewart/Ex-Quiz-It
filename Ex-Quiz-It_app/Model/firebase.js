@@ -39,6 +39,7 @@ let description = document.getElementById('quiz_description');
 
 //BDD references
 const quizRef = ref(db, 'quizzes');
+const themeRef = ref(db, 'themes');
 
 //get title from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -98,15 +99,16 @@ document.getElementById("register_submit").addEventListener('click', function(ev
   })
 }
 
-
 //Function to verify whether user is logged in
 auth.onAuthStateChanged(function(user) {
   if (user) {
     console.log("user logged in", user);
     currentUser = user;
     //document.getElementById("currentuser").innerHTML = user.displayName;
-    //document.getElementById("user-logout").removeAttribute("hidden");
-    //document.getElementById("user-login").setAttribute("hidden", "");
+    document.getElementById("Logout").removeAttribute("hidden");
+    document.getElementById("ConnectionLink").setAttribute("hidden", "");
+    document.getElementById("CreateQuizLink").removeAttribute("hidden");
+    document.getElementById("footer_currentUser").innerHTML = user.displayName;
     onValue(ref(db, 'users/' + auth.currentUser.displayName), (snapshot) => {
       const data = snapshot.val();
   })
@@ -116,10 +118,29 @@ auth.onAuthStateChanged(function(user) {
   }
   });
 
+  document.getElementById("Logout").addEventListener("click", function() {
+    auth.signOut().then(() => {
+        console.log("SignOUT successful");
+    })
+  })
 
 //Function to upload quiz data to database
 if(window.location.toString().includes("create_quiz_page"))
 {
+  const themelist = document.getElementById("themes")
+
+  onValue(themeRef, (snapshot) => {
+    const data = snapshot.val();
+
+    for(let themeID in data){
+      const option = document.createElement('option');
+      option.value = themeID;
+      option.textContent = themeID;
+      themelist.appendChild(option)
+
+    }
+  })
+
   document.getElementById("quiz_submit").addEventListener('click', function(event) {
   event.preventDefault();
 
@@ -128,6 +149,7 @@ if(window.location.toString().includes("create_quiz_page"))
     set(ref(db, 'quizzes/' + currentUser.uid + "/" + title.value), {
       description: description.value,
       author: currentUser.displayName,
+      theme: themelist.value
     })
 
     for(var i = 1; i <= document.querySelectorAll('#quizForm input[name="question"]').length; i++)
@@ -143,10 +165,6 @@ if(window.location.toString().includes("create_quiz_page"))
   }
   })
 }
-
-//function for the delete question button 
-
-
 
 
 //function to add more questions
@@ -182,6 +200,7 @@ if (window.location.toString().includes("create_quiz_page")) {
         var checkboxInput = document.createElement("input");
         checkboxInput.type = "checkbox";
         checkboxInput.id = "question" + noQuestions + "ans" + i + "cb";
+        checkboxInput.required = "true";
 
         // Append answer label and input to the question container
         questionContainer.appendChild(answerLabel);
@@ -212,84 +231,129 @@ if (window.location.toString().includes("create_quiz_page")) {
   });
 }
 
-//function that transfers user to quiz start page of quiz
-function startQuiz(x, y){
+
+
+//function that transfers user to quiz start page
+function startPage(x, y){
   const url = 'index.php?action=start_page&author=' + encodeURIComponent(x) + '&title=' + encodeURIComponent(y);
   window.location.href = url;
 }
 
 
-// function to display quizzes on homepage
+//functions for the filters
 if (window.location.toString().includes("home")) {
+  onValue(themeRef, (snapshot) => {
+      const data = snapshot.val();
+      const filterList = document.getElementById("filter");
+
+      const optionAll = document.createElement('option');
+      optionAll.value = "all";
+      optionAll.textContent = "all";
+      filterList.appendChild(optionAll);
+ 
+      for (let themeID in data) {
+          const option = document.createElement('option');
+          option.value = themeID;
+          option.textContent = themeID;
+          filterList.appendChild(option);
+      }
+
+      filterList.addEventListener('change', function() {
+          const selectedTheme = this.value;
+
+            filterQuizzesByTheme(selectedTheme);
+      });
+  });
+
+function filterQuizzesByTheme(selectedTheme) {
   onValue(quizRef, (snapshot) => {
     const data = snapshot.val();
+    const quizList = document.getElementById("quiz_list");
+    quizList.innerHTML = ''; // Clear previous quizzes
 
-    const quizList = document.getElementById('quiz_list');
-    quizList.innerHTML = '';
+    document.getElementById("filter_title").innerHTML = ("Current filter : " + selectedTheme)
 
-    for (let userID in data) {
-      const userQuizzes = data[userID];
-
-      //Creates HTML elements that make up the home page
-      for (let quizName in userQuizzes) {
-
-        const quizElement = document.createElement('tr');
-        quizElement.classList.add('quiz');
-        quizElement.style.maxwidth = '100%';
-        quizElement.style.maxHeightheight = '180px';
-        quizElement.style.backgroundColor = '#b2f7c5';
-  
-        const titleElement = document.createElement('td');
-
-        // Set the title to the quiz name
-        titleElement.textContent = quizName;
-        titleElement.style.fontSize = '30px';
-        titleElement.style.marginRight = '50px';
-        titleElement.style.textAlign = 'center';
-
-        // The space between each item, just for aesthetic reasons
-        const spacer = document.createElement('tr');
-        const spacerCell = document.createElement('td');
-        spacerCell.style.height = '10px';
-        spacerCell.colspan = 2;
-        spacer.appendChild(spacerCell);
-
-        // Create a button that goes to quiz start page
-        const startQuizButton = document.createElement('button');
-        startQuizButton.textContent = 'Start';
-        startQuizButton.style.fontWeight = 'bold';
-        startQuizButton.style.fontSize = '30px';
-        startQuizButton.style.padding = '5px 10px';
-        startQuizButton.style.border = 'none';
-        startQuizButton.style.cursor = 'pointer';
-        startQuizButton.style.height = "100px";
-        startQuizButton.style.width = "250px";
-        startQuizButton.style.marginRight = "3%"; 
-
-        startQuizButton.addEventListener('click', () => {
-          startQuiz(userID, quizName);
-          console.log('More details clicked for quiz: ' + quizName);
-        });
-
-        const startQuizCell = document.createElement('td');
-        startQuizCell.style.textAlign = 'right';
-        startQuizCell.appendChild(startQuizButton);
-
-        const imageElement = document.createElement('img');
-        imageElement.src = 'View/Content/Images/Pizza.jpg'; // Leave src empty initially
-        imageElement.style.maxWidth = "180px";
-        imageElement.style.maxHeight = "180px";
-
-        quizElement.appendChild(imageElement);
-        quizElement.appendChild(titleElement);
-        quizElement.appendChild(startQuizCell);
-
-        quizList.appendChild(quizElement);
-        quizList.appendChild(spacer);
+    if(selectedTheme == "all"){
+      for (let userID in data){
+        const userQuizzes = data[userID];
+        for(let quizName in userQuizzes){
+          generateQuiz(userID, quizName);
+        }
+      } 
+    }else{
+      for (let userID in data) {
+        const userQuizzes = data[userID];
+        for (let quizName in userQuizzes) {
+          const quiz = userQuizzes[quizName];
+          if (quiz.theme === selectedTheme) {
+            generateQuiz(userID, quizName);
+          }
+        }
       }
-    }
+    } 
+});
 
-  })
+
+function generateQuiz(userID, quizName) {
+    const quizList = document.getElementById("quiz_list");
+
+    const quizElement = document.createElement('tr');
+    quizElement.classList.add('quiz');
+    quizElement.style.maxWidth = '100%';
+    quizElement.style.maxHeight = '180px';
+    quizElement.style.backgroundColor = '#b2f7c5';
+
+    const titleElement = document.createElement('td');
+    titleElement.textContent = quizName;
+    titleElement.style.fontSize = '30px';
+    titleElement.style.marginRight = '50px';
+    titleElement.style.textAlign = 'center';
+
+    const spacer = document.createElement('tr');
+    const spacerCell = document.createElement('td');
+    spacerCell.style.height = '10px';
+    spacerCell.colSpan = 2;
+    spacer.appendChild(spacerCell);
+
+    const startPageButton = document.createElement('button');
+    startPageButton.textContent = 'Start';
+    startPageButton.style.fontWeight = 'bold';
+    startPageButton.style.fontSize = '30px';
+    startPageButton.style.padding = '5px 10px';
+    startPageButton.style.border = 'none';
+    startPageButton.style.cursor = 'pointer';
+    startPageButton.style.height = "100px";
+    startPageButton.style.width = "250px";
+    startPageButton.style.marginRight = "3%"; 
+
+    startPageButton.addEventListener('click', () => {
+        startPage(userID, quizName);
+        console.log('More details clicked for quiz: ' + quizName);
+    });
+
+    const startQuizCell = document.createElement('td');
+    startQuizCell.style.textAlign = 'right';
+    startQuizCell.appendChild(startPageButton);
+
+    const imageElement = document.createElement('img');
+    imageElement.src = 'View/Content/Images/Pizza.jpg'; // Update this to use the correct image if needed
+    imageElement.style.maxWidth = "180px";
+    imageElement.style.maxHeight = "180px";
+
+    quizElement.appendChild(imageElement);
+    quizElement.appendChild(titleElement);
+    quizElement.appendChild(startQuizCell);
+
+    quizList.appendChild(quizElement);
+    quizList.appendChild(spacer);
+  }
+}
+
+
+//function that transfers user to quiz
+function startQuiz(x, y){
+  const url = 'index.php?action=quiz&author=' + encodeURIComponent(x) + '&title=' + encodeURIComponent(y);
+  window.location.href = url;
 }
 
 
@@ -315,7 +379,6 @@ if (window.location.toString().includes("start_page")) {
           startTitle.style.fontSize = '40px';
           startTitle.style.textAlign = 'center';
           startTitle.style.marginBottom = '50px';
-          startTitle.style.marginBottom = '20px';
 
           const startDescription = document.createElement('p')
           startDescription.textContent = userQuizzes[quizName].description;
@@ -336,21 +399,164 @@ if (window.location.toString().includes("start_page")) {
           startImage.style.display = 'block';
           startImage.style.margin = 'auto'
 
-          const startButton = document.createElement('button');
-          startButton.textContent = 'START QUIZ'
-          startButton.style.height = '100px';
-          startButton.style.width = '200px'
-          startButton.style.display = 'block';
-          startButton.style.margin = 'auto'
-          startButton.style.marginTop = '10vh'
+          const startQuizButton = document.createElement('button');
+          startQuizButton.textContent = 'START QUIZ'
+          startQuizButton.style.height = '100px';
+          startQuizButton.style.width = '200px'
+          startQuizButton.style.display = 'block';
+          startQuizButton.style.margin = 'auto';
+          startQuizButton.style.marginTop = '10vh';
+
+          startQuizButton.addEventListener('click', () => {
+            startQuiz(userID, quizName);
+          });
 
           startContent.appendChild(startImage);
           startContent.appendChild(startTitle);
           startContent.appendChild(startDescription);
-          startContent.appendChild(startButton);
+          startContent.appendChild(startQuizButton);
 
         }
       }
     }
   })
+}
+
+let questionNum
+
+//functions for the quiz page
+if (window.location.toString().includes("quiz")) {
+  questionNum = 1;
+          
+  onValue(quizRef, (snapshot) => {
+
+    const data = snapshot.val();
+
+    //looks at URL in order to determin which quiz the page is related to and then creates HTML elements containing responding information
+    for (let userID in data) {
+      const userQuizzes = data[userID];
+      for (let quizName in userQuizzes) {
+        
+        if (quizName == getTitle && userID == getAuthor) {
+        {
+          const titleContainer = document.getElementById("quiz_title")
+
+          const quizTitle = document.createElement('h2');
+          quizTitle.textContent = quizName;
+          quizTitle.style.fontWeight = 'bold';
+          quizTitle.style.fontSize = '40px';
+          quizTitle.style.textAlign = 'center';
+          quizTitle.style.marginBottom = '50px';
+          titleContainer.appendChild(quizTitle);    
+        }
+
+          var score = 0;
+          var currentQuestionNum = 1;
+
+        
+          function displayQuestion(quiz, questionNum) {
+            const question = quiz["question" + questionNum];
+            const questionElement = document.getElementById('quiz_question');
+            const answerContainer = document.getElementById('answer_container');
+        
+            questionElement.textContent = question.text;
+            answerContainer.innerHTML = '';
+        
+            let answerCount = 0;
+            for (let key in question) {
+              if (key.startsWith('answer')) {
+                answerCount++;
+              }
+            }
+        
+            for (var i = 1; i <= answerCount; i++) {
+              var answerButton = document.createElement("button");
+              answerButton.type = "button";
+              answerButton.textContent = question["answer" + i].text;
+              answerButton.style.height = '100px';
+              answerButton.style.width = '200px';
+              answerButton.style.marginLeft = '20px';
+              answerButton.style.backgroundColor = '#2fcc59';
+              answerButton.style.fontSize = '25px';
+              answerButton.style.color = 'white';
+        
+              let answer = question["answer" + i].correct;
+        
+              answerButton.addEventListener('click', (function(answer, nextQuestionNum) {
+                return function() {
+                  if (answer) {
+                    score++;
+                    console.log("Correct answer. Current score: " + score);
+                  } else {
+                    console.log("Incorrect answer. Current score: " + score);
+                  }
+                  if (nextQuestionNum <= Object.keys(quiz).filter(key => key.startsWith('question')).length) {
+                    displayQuestion(quiz, nextQuestionNum);
+                  } else {
+                    set(ref(db, 'quizzes/' + userID + '/' + quizName + '/players' + '/' + currentUser.uid), {score: score, user: currentUser.displayName})
+                    displayScore();
+                  }
+                };
+              })(answer, questionNum + 1));
+        
+              answerContainer.appendChild(answerButton);
+            }
+          }
+        
+          function displayScore() {
+            const quizContainer = document.getElementById('quiz_container');
+            quizContainer.innerHTML = '<h2 style="display: block; margin: auto; text-align: center; font-size: 40px;">Quiz Completed</h2><p style="text-align: center; font-size: 30px;">Your score is: ' + score + '</p>';
+          }
+      
+        for (let userID in data) {
+          const userQuizzes = data[userID];
+                      
+          for (let quizName in userQuizzes) {
+            if (quizName == getTitle && userID == getAuthor) {
+              const quiz = userQuizzes[quizName];
+        
+              const quizContainer = document.getElementById("quiz_container");
+              quizContainer.classList.add('quiz-container');
+
+              const questionElement = document.createElement('p');
+              questionElement.id = 'quiz_question';
+              questionElement.style.fontSize = '30px';
+              questionElement.style.textAlign = 'center';
+              questionElement.style.marginBottom = '20px';
+              quizContainer.appendChild(questionElement);
+        
+              const answerContainer = document.createElement('div');
+              answerContainer.id = 'answer_container';
+              answerContainer.style.display = 'flex';
+              answerContainer.style.justifyContent = 'center';
+              quizContainer.appendChild(answerContainer);
+        
+                displayQuestion(quiz, currentQuestionNum);
+            }
+          }
+        }
+      }
+    }
+    }
+  })
+}
+    
+if (window.location.toString().includes("admin_page")) {
+  onValue(themeRef, (snapshot) => {
+    const data = snapshot.val();
+    document.getElementById("theme_submit").addEventListener('click', function() {
+      const theme = document.getElementById('theme_input').value.trim();
+      console.log('themes/' + theme + '/' + theme);
+      if (theme) {
+        if (data && data[theme]) {
+          alert("Theme already exists");
+        } else {
+          set(ref(db, 'themes/' + theme), { text: theme })
+        }
+      } else {
+        alert("You must type a theme");
+      }
+    });
+  });
+}
 }

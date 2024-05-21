@@ -93,6 +93,10 @@ button[type="submit"]:hover {
     background-color: #3ba0f7;
 }
 
+#themes{
+    width: 30%;
+}
+
 </style>
 
 
@@ -110,6 +114,9 @@ button[type="submit"]:hover {
         <div class="form-group">
             <label for="quizDescription">Description:</label>
             <textarea id="quiz_description" name="quizDescription" rows="4" required></textarea>
+        </div>
+        <div>
+            <select id="themes"></select>
         </div>
         <div class="form-group">
             <label for="question">Question:</label>
@@ -149,3 +156,7 @@ button[type="submit"]:hover {
 </body>
 
 </html>
+
+<?php
+include_once('View/footer.php');
+?>

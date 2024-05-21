@@ -27,8 +27,10 @@
             <a class="nav-link active" aria-current="page" href="index.php?action=home">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="index.php?action=connect_page">Connection Page</a>
-            <a class="nav-link" href="index.php?action=create_quiz_page">Create a quiz!</a>
+            <a class="nav-link" id="ConnectionLink" href="index.php?action=connect_page">Connection Page</a>
+            <a class="nav-link" id="CreateQuizLink" href="index.php?action=create_quiz_page" hidden>Create a quiz!</a>
+            <a class="nav-link" id="adminPageLink" href="index.php?action=admin_page">Admin Page</a>
+            <a class="nav-link" id="Logout" href="" hidden>Logout</a>
           </li>
         </ul>
       </div>
