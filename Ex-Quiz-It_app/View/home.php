@@ -73,17 +73,9 @@ select option {
     <div id="filter_container">
         <div id="filter_title">Current Filter</div>
         <div id="actions_container">
-            <select id="filter">
-                <option value="all" disabled selected>filter</option>
-            </select>
-            <select id="order">
-                <option value="" disabled selected>Order</option>
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-            </select>
+            <select id="filter"></select>
         </div>
     </div>
-
     <table id="quiz_list"></table>
 </body>
 </html>

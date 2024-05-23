@@ -29,6 +29,7 @@
           <li class="nav-item">
             <a class="nav-link" id="ConnectionLink" href="index.php?action=connect_page">Connection Page</a>
             <a class="nav-link" id="CreateQuizLink" href="index.php?action=create_quiz_page" hidden>Create a quiz!</a>
+            <a class="nav-link" id="edit_page" href="index.php?action=edit_page" hidden>edit_page</a>
             <a class="nav-link" id="adminPageLink" href="index.php?action=admin_page">Admin Page</a>
             <a class="nav-link" id="Logout" href="" hidden>Logout</a>
           </li>

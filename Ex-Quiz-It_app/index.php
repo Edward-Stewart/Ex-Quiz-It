@@ -21,7 +21,16 @@ if (isset($_GET['action'])){
             break;    
         case 'admin_page' :
             admin_page();
-            break;    
+            break; 
+        case 'reset_password' :
+            reset_password();
+            break;     
+        case 'edit_page' :
+            edit_page();
+            break;
+        case 'edit' :
+            edit();
+            break;      
         default :
             home();
             break;

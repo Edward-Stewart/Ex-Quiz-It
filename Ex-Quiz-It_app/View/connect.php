@@ -47,7 +47,7 @@ include_once('View/header.php');
 
     <div class="col">
       <!-- Simple link -->
-      <a href="#!">Forgot password?</a>
+      <a href="index.php?action=reset_password">Forgot password?</a>
     </div>
   </div>
 

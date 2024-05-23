@@ -127,24 +127,24 @@ button[type="submit"]:hover {
             <div class="answer-group">
                 <div class="answer-column">
                     <label for="answer1">Answer 1:</label>
-                    <input type="text" id="question1ans1" name="answer1">
+                    <input type="text" id="question1ans1" name="answer1" required>
                     <input type="checkbox" id="question1ans1cb" name="answer1_checkbox">
                 </div>
                 <div class="answer-column">
                     <label for="answer2">Answer 2:</label>
-                    <input type="text" id="question1ans2" name="answer2">
+                    <input type="text" id="question1ans2" name="answer2" required>
                     <input type="checkbox" id="question1ans2cb" name="answer2_checkbox">
                 </div>
             </div>
             <div class="answer-group">
                 <div class="answer-column">
                     <label for="answer3">Answer 3:</label>
-                    <input type="text" id="question1ans3" name="answer3">
+                    <input type="text" id="question1ans3" name="answer3" required>
                     <input type="checkbox" id="question1ans3cb" name="answer3_checkbox">
                 </div>
                 <div class="answer-column">
                     <label for="answer4">Answer 4:</label>
-                    <input type="text" id="question1ans4" name="answer4">
+                    <input type="text" id="question1ans4" name="answer4" required>
                     <input type="checkbox" id="question1ans4cb" name="answer4_checkbox">
                 </div>
             </div>
