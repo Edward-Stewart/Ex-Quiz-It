@@ -11,8 +11,8 @@ function create_quiz_page(){
 function start_page(){
     require "View/start_page.php";
 }
-function quiz(){
-    require "View/quiz.php";
+function play_quiz_page(){
+    require "View/play_quiz_page.php";
 }
 function admin_page(){
     require "View/admin_page.php";
@@ -22,7 +22,4 @@ function reset_password(){
 }
 function edit_page(){
     require "View/edit_page.php";
-}
-function edit(){
-    require "View/edit.php";
 }

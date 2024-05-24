@@ -16,8 +16,8 @@ if (isset($_GET['action'])){
         case 'start_page' :
             start_page();
             break;
-        case 'quiz' :
-            quiz();
+        case 'play_quiz_page' :
+            play_quiz_page();
             break;    
         case 'admin_page' :
             admin_page();
@@ -28,9 +28,6 @@ if (isset($_GET['action'])){
         case 'edit_page' :
             edit_page();
             break;
-        case 'edit' :
-            edit();
-            break;      
         default :
             home();
             break;

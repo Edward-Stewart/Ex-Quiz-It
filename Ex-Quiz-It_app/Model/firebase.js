@@ -162,8 +162,7 @@ if(window.location.toString().includes("reset_password")){
 //function to display quizzes on edit page
 if(window.location.toString().includes("edit_page"))
 {
-  console.log("testingtesting123")
-  
+
   const editContainer = document.getElementById("edit_content")
   editContainer.style.display = 'block';
   editContainer.style.marginLeft = '30vw';
@@ -219,17 +218,16 @@ if(window.location.toString().includes("edit_page"))
 }
 
 function editPage(x, y){
-  const url = 'index.php?action=edit&author=' + encodeURIComponent(x) + '&title=' + encodeURIComponent(y);
+  const url = 'index.php?action=create_quiz_page&author=' + encodeURIComponent(x) + '&title=' + encodeURIComponent(y);
   window.location.href = url;
   console.log(currentUser.uid)
 }
 
 
 //Function to upload quiz data to database
-if(window.location.toString().includes("create_quiz_page"))
+if(window.location.toString().includes("create_quiz"))
 {
   const themelist = document.getElementById("themes")
-
   onValue(themeRef, (snapshot) => {
     const data = snapshot.val();
 
@@ -242,6 +240,51 @@ if(window.location.toString().includes("create_quiz_page"))
     }
   })
 
+  //add_question_button
+  document.getElementById("add_question").addEventListener('click', function() {
+    addQuestion()
+  })
+
+  //edit_page
+  onValue(quizRef, (snapshot) => {
+    const data = snapshot.val();
+    for (let userID in data) {
+      const userQuizzes = data[userID];
+      for (let quizName in userQuizzes) {
+        // Finds the correct quiz
+        if (quizName === getTitle) {
+          console.log("yo");
+          title.value = quizName;
+          description.value = userQuizzes[quizName].description;
+          themelist.value = userQuizzes[quizName].theme;
+          document.getElementById("question1").value = userQuizzes[quizName].question1.text;
+
+          // Iterate through questions and answers
+          let i = 1;
+          for (let questionKey in userQuizzes[quizName]) {
+            if (questionKey.startsWith('question')) {
+              addQuestion()
+              const question = userQuizzes[quizName][questionKey];
+              document.getElementById(`question${i}`).value = question.text;
+              let j = 1;
+              for (let answerKey in question) {
+                if (answerKey.startsWith('answer')) {
+                  document.getElementById(`question${i}ans${j}`).value = question[answerKey].text;
+                  if (question[answerKey].correct) {
+                    document.getElementById(`question${i}ans${j}cb`).checked = true;
+                  }
+                  j++;
+                }
+              }
+              i++;
+            }
+          }
+        }
+      }
+    }
+  });
+
+
   document.getElementById("quiz_submit").addEventListener('click', function() {
 
   if(title.value && description.value){
@@ -253,94 +296,108 @@ if(window.location.toString().includes("create_quiz_page"))
       status: "offline"
     })
 
-    for(var i = 1; i <= document.querySelectorAll('#quizForm input[name="question"]').length; i++)
-    {
-      console.log("question"+i)
-      set(ref(db, 'quizzes/' + currentUser.uid + "/" + title.value + "/" + "question" + i), {text: document.getElementById("question"+i).value})
-      for(var j = 1; j <= 4; j++){
-        console.log("question"+i+"ans"+j)
-        console.log("question"+i+"ans"+j+"cb")
-        set(ref(db, 'quizzes/' + currentUser.uid + "/" + title.value + "/" + "question" + i + "/" + "answer" + j), {text: document.getElementById("question"+i+"ans"+j).value, correct: document.getElementById("question"+i+"ans"+j+"cb").checked})
+      for(var i = 1; i <= document.querySelectorAll('#quizForm input[name="question"]').length; i++)
+      {
+        console.log("question"+i)
+        set(ref(db, 'quizzes/' + currentUser.uid + "/" + title.value + "/" + "question" + i), {text: document.getElementById("question"+i).value})
+        for(var j = 1; j <= 4; j++){
+          console.log("question"+i+"ans"+j)
+          console.log("question"+i+"ans"+j+"cb")
+          set(ref(db, 'quizzes/' + currentUser.uid + "/" + title.value + "/" + "question" + i + "/" + "answer" + j), {text: document.getElementById("question"+i+"ans"+j).value, correct: document.getElementById("question"+i+"ans"+j+"cb").checked})
+        }
       }
     }
-  }
   })
 }
 
+function addQuestion() {
+  var noQuestions = document.querySelectorAll('#quizForm input[name="question"]').length + 1;
 
-//function to add more questions
-if (window.location.toString().includes("create_quiz_page")) {
-  document.getElementById("add_question").addEventListener('click', function() {
-    var noQuestions = document.querySelectorAll('#quizForm input[name="question"]').length + 1;
+  // Create a new div element to contain the question and answer inputs
+  var questionContainer = document.createElement("div");
+  questionContainer.classList.add("form-group");
+  questionContainer.id = 'QuestionContainer' + noQuestions;
 
-      // Create a new div element to contain the question and answer inputs
-      var questionContainer = document.createElement("div");
-      questionContainer.classList.add("form-group");
-      questionContainer.id = 'QuestionContainer' + noQuestions;
+  // Create label and input for the question
+  var questionLabel = document.createElement("label");
+  questionLabel.textContent = "Question:";
+  var questionInput = document.createElement("input");
+  questionInput.type = "text";
+  questionInput.name = "question";
+  questionInput.id = "question" + noQuestions;
 
-      // Create label and input for the question
-      var questionLabel = document.createElement("label");
-      questionLabel.textContent = "Question:";
-      var questionInput = document.createElement("input");
-      questionInput.type = "text";
-      questionInput.name = "question";
-      questionInput.id = "question" + noQuestions;
+  // Append question label and input to the question container
+  questionContainer.appendChild(questionLabel);
+  questionContainer.appendChild(questionInput);
 
-      // Append question label and input to the question container
-      questionContainer.appendChild(questionLabel);
-      questionContainer.appendChild(questionInput);
+  // Create labels and inputs for the answers
+  for (var i = 1; i <= 4; i++) {
+    var answerLabel = document.createElement("label");
+    answerLabel.textContent = "Answer " + i + ":";
+    var answerInput = document.createElement("input");
+    answerInput.type = "text";
+    answerInput.name = "answer" + i;
+    answerInput.id = "question" + noQuestions + "ans" + i;
+    var checkboxInput = document.createElement("input");
+    checkboxInput.type = "checkbox";
+    checkboxInput.id = "question" + noQuestions + "ans" + i + "cb";
+    checkboxInput.required = "true";
 
-      // Create labels and inputs for the answers
-      for (var i = 1; i <= 4; i++) {
-        var answerLabel = document.createElement("label");
-        answerLabel.textContent = "Answer " + i + ":";
-        var answerInput = document.createElement("input");
-        answerInput.type = "text";
-        answerInput.name = "answer" + i;
-        answerInput.id = "question" + noQuestions + "ans" + i;
-        var checkboxInput = document.createElement("input");
-        checkboxInput.type = "checkbox";
-        checkboxInput.id = "question" + noQuestions + "ans" + i + "cb";
-        checkboxInput.required = "true";
+    // Append answer label and input to the question container
+    questionContainer.appendChild(answerLabel);
+    questionContainer.appendChild(answerInput);
+    questionContainer.appendChild(checkboxInput);
+  }
 
-        // Append answer label and input to the question container
-        questionContainer.appendChild(answerLabel);
-        questionContainer.appendChild(answerInput);
-        questionContainer.appendChild(checkboxInput);
+  var deleteQuestion = document.createElement("button");
+  deleteQuestion.textContent = 'DELETE';
+  deleteQuestion.style.height = '40px';
+  deleteQuestion.style.width = '80px';
+  deleteQuestion.style.display = 'block';
+  deleteQuestion.style.margin = 'auto';
+  deleteQuestion.type = 'button';
+  deleteQuestion.id = 'deleteQuestion' + noQuestions;
+  deleteQuestion.addEventListener('click', () => {
+    questionContainer.remove();
+    console.log('question removed');
+  });
+
+  questionContainer.appendChild(deleteQuestion);
+
+  // Append the question container to the quiz form
+  var quizForm = document.getElementById("quizForm");
+  quizForm.appendChild(questionContainer);
+  console.log("Number of questions in the form:", noQuestions);
+}
+
+//admin page functions
+if (window.location.toString().includes("admin_page")) {
+  onValue(themeRef, (snapshot) => {
+    const data = snapshot.val();
+    document.getElementById("theme_submit").addEventListener('click', function() {
+      const theme = document.getElementById('theme_input').value.trim();
+      console.log('themes/' + theme + '/' + theme);
+      if (theme) {
+        if (data && data[theme]) {
+          alert("Theme already exists");
+        } else {
+          set(ref(db, 'themes/' + theme), { text: theme })
+        }
+      } else {
+        alert("You must type a theme");
       }
-
-      var deleteQuestion = document.createElement("button");
-      deleteQuestion.textContent = 'DELETE';
-      deleteQuestion.style.height = '40px';
-      deleteQuestion.style.width = '80px';
-      deleteQuestion.style.display = 'block';
-      deleteQuestion.style.margin = 'auto';
-      deleteQuestion.type = 'button';
-      deleteQuestion.id = 'deleteQuestion' + noQuestions;
-      deleteQuestion.addEventListener('click', () => {
-      questionContainer.remove();
-        console.log('question removed');
-      });
-
-      questionContainer.appendChild(deleteQuestion);
-
-
-      // Append the question container to the quiz form
-      var quizForm = document.getElementById("quizForm");
-      quizForm.appendChild(questionContainer);
-      console.log("Number of questions in the form:", noQuestions);
+    });
   });
 }
 
-
 //function that transfers user to quiz
 function startQuiz(x, y){
-  const url = 'index.php?action=quiz&author=' + encodeURIComponent(x) + '&title=' + encodeURIComponent(y);
+  const url = 'index.php?action=play_quiz_page&author=' + encodeURIComponent(x) + '&title=' + encodeURIComponent(y);
   window.location.href = url;
 }
 
 //functions for the quiz page
-if (window.location.toString().includes("quiz")) {
+if (window.location.toString().includes("play_quiz_page")) {
   questionNum = 1;
           
   onValue(quizRef, (snapshot) => {
@@ -350,7 +407,7 @@ if (window.location.toString().includes("quiz")) {
     for (let userID in data) {
       const userQuizzes = data[userID];
       for (let quizName in userQuizzes) {
-        
+
         if (quizName == getTitle && userID == getAuthor) {
         {
           const titleContainer = document.getElementById("quiz_title")
@@ -636,24 +693,5 @@ function generateQuiz(userID, quizName) {
     quizList.appendChild(quizElement);
     quizList.appendChild(spacer);
   }
-}
-    
-if (window.location.toString().includes("admin_page")) {
-  onValue(themeRef, (snapshot) => {
-    const data = snapshot.val();
-    document.getElementById("theme_submit").addEventListener('click', function() {
-      const theme = document.getElementById('theme_input').value.trim();
-      console.log('themes/' + theme + '/' + theme);
-      if (theme) {
-        if (data && data[theme]) {
-          alert("Theme already exists");
-        } else {
-          set(ref(db, 'themes/' + theme), { text: theme })
-        }
-      } else {
-        alert("You must type a theme");
-      }
-    });
-  });
 }
 }
