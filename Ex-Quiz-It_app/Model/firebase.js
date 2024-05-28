@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getDatabase, set, ref, onValue, push, remove} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+import { getDatabase, set, ref, update, onValue, remove} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail} from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js';
+import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-storage.js';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,6 +21,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 //Values from register form
 let fname = document.getElementById('register_fname');
@@ -36,6 +38,7 @@ let currentUser;
 let quizForm = document.getElementById('quizForm')
 let title = document.getElementById('quiz_title');
 let description = document.getElementById('quiz_description');
+let selectedFile = "";
 
 //BDD references
 const quizRef = ref(db, 'quizzes');
@@ -48,6 +51,16 @@ const getAuthor = urlParams.get('author');
 
 //Values for quiz
 let questionNum
+
+const currentDate = new Date();
+
+// get minutes and seconds for creation of ID
+const minute = currentDate.getMinutes();
+const second = currentDate.getSeconds();
+
+var id = "";
+
+
 
 //Functions for Connection page
 if(window.location.toString().includes("connect")) {
@@ -81,6 +94,7 @@ document.getElementById("register_submit").addEventListener('click', function(ev
     auth.onAuthStateChanged(function(user){
       if (user) {
         // Update user's profile with display name
+        set(ref(db, 'users/' + user.uid + "/"), {email: email.value, role: 0})
         updateProfile(user, {
             displayName: fname.value + " " + sname.value
         })
@@ -113,8 +127,12 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById("CreateQuizLink").removeAttribute("hidden");
     document.getElementById("edit_page").removeAttribute("hidden");
     document.getElementById("footer_currentUser").innerHTML = user.displayName;
-    onValue(ref(db, 'users/' + auth.currentUser.displayName), (snapshot) => {
+    onValue(ref(db, 'users/' + auth.currentUser.uid + "/role"), (snapshot) => {
       const data = snapshot.val();
+      let userRole = data
+      if(userRole == 1){
+        document.getElementById("adminPageLink").removeAttribute("hidden")
+      }
   })
   } else {
     console.log("user logged out");
@@ -195,7 +213,6 @@ if(window.location.toString().includes("edit_page"))
 
           let editButton = document.createElement('button');
           editButton.textContent = 'Edit';
-          editButton.style.padding = '5px 10px';
           editButton.style.fontSize = '1em';
           editButton.style.border = 'none';
           editButton.style.borderRadius = '5px';
@@ -206,9 +223,60 @@ if(window.location.toString().includes("edit_page"))
             editPage(userID, quizName)
           });
 
-   
+          let deleteButton = document.createElement('button');
+          deleteButton.textContent = 'DELETE';
+          deleteButton.style.fontSize = '1em';
+          deleteButton.style.border = 'none';
+          deleteButton.style.borderRadius = '5px';
+          deleteButton.style.backgroundColor = '#fc0303';
+          deleteButton.style.color = 'white';
+          deleteButton.style.cursor = 'pointer';
+          deleteButton.addEventListener('click', () => {
+            const quizRef = ref(db, 'quizzes/' + currentUser.uid + "/" + quizName);
+            remove(quizRef)
+              .then(() => {
+                // Remove the quizDiv from the DOM
+                editContainer.removeChild(quizDiv);
+                console.log(`Quiz "${quizName}" deleted successfully.`);
+              })
+              .catch((error) => {
+                console.error(`Error deleting quiz "${quizName}":`, error);
+              });
+            location.reload();
+          });
 
+          let offlineButton = document.createElement('button');
+          offlineButton.textContent = 'Offline';
+          offlineButton.style.padding = '5px 10px';
+          offlineButton.style.fontSize = '1em';
+          offlineButton.style.border = 'none';
+          offlineButton.style.borderRadius = '5px';
+          offlineButton.style.backgroundColor = '#b002aa';
+          offlineButton.style.color = 'white';
+          offlineButton.style.cursor = 'pointer';
+          offlineButton.addEventListener('click', () => {
+            update(ref(db, 'quizzes/' + currentUser.uid + "/" + quizName), {status: "offline"})
+            location.reload();
+          });
+
+          let uploadButton = document.createElement('button');
+          uploadButton.textContent = 'Upload';
+          uploadButton.style.padding = '5px 10px';
+          uploadButton.style.fontSize = '1em';
+          uploadButton.style.border = 'none';
+          uploadButton.style.borderRadius = '5px';
+          uploadButton.style.backgroundColor = '#04ff00';
+          uploadButton.style.color = 'white';
+          uploadButton.style.cursor = 'pointer';
+          uploadButton.addEventListener('click', () => {
+            update(ref(db, 'quizzes/' + currentUser.uid + "/" + quizName), {status: "online"})
+            location.reload();
+          });
+   
           quizDiv.appendChild(editButton);
+          quizDiv.appendChild(deleteButton);
+          quizDiv.appendChild(offlineButton);
+          quizDiv.appendChild(uploadButton);
           editContainer.appendChild(quizDiv);
         }
         
@@ -224,9 +292,16 @@ function editPage(x, y){
 }
 
 
-//Function to upload quiz data to database
+//Function to upload theme data to database
 if(window.location.toString().includes("create_quiz"))
 {
+
+  //selected image file
+  document.getElementById("fileInp").onchange = () => {
+    selectedFile = document.getElementById("fileInp").files[0];
+    console.log(selectedFile);
+  }
+
   const themelist = document.getElementById("themes")
   onValue(themeRef, (snapshot) => {
     const data = snapshot.val();
@@ -245,58 +320,111 @@ if(window.location.toString().includes("create_quiz"))
     addQuestion()
   })
 
-  //edit_page
-  onValue(quizRef, (snapshot) => {
-    const data = snapshot.val();
-    for (let userID in data) {
-      const userQuizzes = data[userID];
-      for (let quizName in userQuizzes) {
-        // Finds the correct quiz
-        if (quizName === getTitle) {
-          console.log("yo");
-          title.value = quizName;
-          description.value = userQuizzes[quizName].description;
-          themelist.value = userQuizzes[quizName].theme;
-          document.getElementById("question1").value = userQuizzes[quizName].question1.text;
 
-          // Iterate through questions and answers
-          let i = 1;
-          for (let questionKey in userQuizzes[quizName]) {
-            if (questionKey.startsWith('question')) {
-              addQuestion()
-              const question = userQuizzes[quizName][questionKey];
-              document.getElementById(`question${i}`).value = question.text;
-              let j = 1;
-              for (let answerKey in question) {
-                if (answerKey.startsWith('answer')) {
-                  document.getElementById(`question${i}ans${j}`).value = question[answerKey].text;
-                  if (question[answerKey].correct) {
-                    document.getElementById(`question${i}ans${j}cb`).checked = true;
-                  }
-                  j++;
+//flag that prevents code from repeating itself
+let isQuizDataLoaded = false;
+
+// edit_page
+onValue(quizRef, (snapshot) => {
+  // Check if the quiz data is already loaded
+  if (isQuizDataLoaded) return;
+
+  const data = snapshot.val();
+  for (let userID in data) {
+    const userQuizzes = data[userID];
+    for (let quizName in userQuizzes) {
+      // Finds the correct quiz
+      if (quizName === getTitle) {
+        console.log("yo");
+        title.value = quizName;
+        description.value = userQuizzes[quizName].description;
+        themelist.value = userQuizzes[quizName].theme;
+        document.getElementById("question1").value = userQuizzes[quizName].question1.text;
+
+        // Iterate through questions and answers
+        let i = 1;
+        for (let questionKey in userQuizzes[quizName]) {
+          if (questionKey.startsWith('question')) {
+            addQuestion()
+            const question = userQuizzes[quizName][questionKey];
+            document.getElementById(`question${i}`).value = question.text;
+            let j = 1;
+            for (let answerKey in question) {
+              if (answerKey.startsWith('answer')) {
+                document.getElementById(`question${i}ans${j}`).value = question[answerKey].text;
+                if (question[answerKey].correct) {
+                  document.getElementById(`question${i}ans${j}cb`).checked = true;
                 }
+                j++;
               }
-              i++;
             }
+            i++;
           }
         }
+
+        // Set the flag to indicate that the quiz data has been loaded
+        isQuizDataLoaded = true;
+        break;
       }
     }
-  });
+  }
+});
 
 
-  document.getElementById("quiz_submit").addEventListener('click', function() {
+function uploadSelectedFile(file, id) {
+  // Create a reference to the storage service
+  const storageRef = sRef(storage, 'quiz-images/' + id + file.name);
+  // Upload file to the storage reference
+  const uploadTask = uploadBytesResumable(storageRef, file);
 
-    if(title.value && description.value){
+  // Listen for state changes, errors, and completion of the upload.
+  uploadTask.on('state_changed',
+      (snapshot) => {
+          // Get upload progress
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+              case 'paused':
+                  console.log('Upload is paused');
+                  break;
+              case 'running':
+                  console.log('Upload is running');
+                  break;
+          }
+      },
+      (error) => {
+          // Handle unsuccessful uploads
+          console.error('Upload failed:', error);
+      },
+      () => {
+          // Handle successful uploads on complete
+      getDownloadURL(uploadTask.snapshot.ref)
+        .then((downloadURL) => {
+        console.log('File available at', downloadURL);
+      });
+    }
+  );
+}
+
+
+  //function that submits create a quiz data to the realtime database
+  document.getElementById("quiz_submit").addEventListener('click', function(event) {
+    event.preventDefault
+
+    if(title.value && description.value && selectedFile){
+
+      id = `${currentDate.getTime()}-${minute}-${second}`;
 
       if(getTitle){
-        remove(ref(db, 'quizzes/' + currentUser.uid + "/" + getTitle))
+        remove(ref(db, 'quizzes/' + currentUser.uid + "/" + getTitle)).then
         set(ref(db, 'quizzes/' + currentUser.uid + "/" + title.value), {
           description: description.value,
           author: currentUser.displayName,
           theme: themelist.value,
-          status: "offline"
+          status: "offline",
+          imageSource: id+selectedFile.name
         })
+        uploadSelectedFile(selectedFile, id);
         for(var i = 1; i <= document.querySelectorAll('#quizForm input[name="question"]').length; i++)
         {
           console.log("question"+i)
@@ -312,8 +440,10 @@ if(window.location.toString().includes("create_quiz"))
           description: description.value,
           author: currentUser.displayName,
           theme: themelist.value,
-          status: "offline"
+          status: "offline",
+          imageSource: id+selectedFile.name
         })
+        uploadSelectedFile(selectedFile, id);
         for(var i = 1; i <= document.querySelectorAll('#quizForm input[name="question"]').length; i++)
         {
           console.log("question"+i)
@@ -407,6 +537,106 @@ if (window.location.toString().includes("admin_page")) {
       }
     });
   });
+
+  const admin_editContainer = document.getElementById("admin_editcontent")
+  admin_editContainer.style.display = 'block';
+  admin_editContainer.style.marginLeft = '30vw';
+
+  onValue(quizRef, (snapshot) => {
+    const data = snapshot.val();
+
+    for (let userID in data) {
+        let userQuizzes = data[userID];
+        for (let quizName in userQuizzes) {
+          let quizDiv = document.createElement('div');
+          quizDiv.classList.add('quiz-item');
+          quizDiv.style.display = 'flex';
+          quizDiv.style.justifyContent = 'space-between';
+          quizDiv.style.alignItems = 'center';
+          quizDiv.style.width = '60%';
+          quizDiv.style.padding = '10px';
+          quizDiv.style.margin = '10px 0';
+          quizDiv.style.border = '1px solid #ccc';
+          quizDiv.style.borderRadius = '5px';
+          quizDiv.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          quizDiv.style.backgroundColor = '#f9f9f9';
+
+          let titleElement = document.createElement('h3');
+          titleElement.textContent = quizName;
+          titleElement.style.margin = '0';
+          titleElement.style.fontSize = '1.2em';
+          quizDiv.appendChild(titleElement);
+
+          let editButton = document.createElement('button');
+          editButton.textContent = 'Edit';
+          editButton.style.fontSize = '1em';
+          editButton.style.border = 'none';
+          editButton.style.borderRadius = '5px';
+          editButton.style.backgroundColor = '#007bff';
+          editButton.style.color = 'white';
+          editButton.style.cursor = 'pointer';
+          editButton.addEventListener('click', () => {
+            editPage(userID, quizName)
+          });
+
+          let deleteButton = document.createElement('button');
+          deleteButton.textContent = 'DELETE';
+          deleteButton.style.fontSize = '1em';
+          deleteButton.style.border = 'none';
+          deleteButton.style.borderRadius = '5px';
+          deleteButton.style.backgroundColor = '#fc0303';
+          deleteButton.style.color = 'white';
+          deleteButton.style.cursor = 'pointer';
+          deleteButton.addEventListener('click', () => {
+            const quizRef = ref(db, 'quizzes/' + currentUser.uid + "/" + quizName);
+            remove(quizRef)
+              .then(() => {
+                // Remove the quizDiv from the DOM
+                admin_editContainer.removeChild(quizDiv);
+                console.log(`Quiz "${quizName}" deleted successfully.`);
+              })
+              .catch((error) => {
+                console.error(`Error deleting quiz "${quizName}":`, error);
+              });
+            location.reload();
+          });
+
+          let offlineButton = document.createElement('button');
+          offlineButton.textContent = 'Offline';
+          //uploadButton.style.padding = '5px 10px';
+          offlineButton.style.fontSize = '1em';
+          offlineButton.style.border = 'none';
+          offlineButton.style.borderRadius = '5px';
+          offlineButton.style.backgroundColor = '#b002aa';
+          offlineButton.style.color = 'white';
+          offlineButton.style.cursor = 'pointer';
+          offlineButton.addEventListener('click', () => {
+            update(ref(db, 'quizzes/' + currentUser.uid + "/" + quizName), {status: "offline"})
+            location.reload();
+          });
+
+          let uploadButton = document.createElement('button');
+          uploadButton.textContent = 'Upload';
+          //uploadButton.style.padding = '5px 10px';
+          uploadButton.style.fontSize = '1em';
+          uploadButton.style.border = 'none';
+          uploadButton.style.borderRadius = '5px';
+          uploadButton.style.backgroundColor = '#04ff00';
+          uploadButton.style.color = 'white';
+          uploadButton.style.cursor = 'pointer';
+          uploadButton.addEventListener('click', () => {
+            update(ref(db, 'quizzes/' + currentUser.uid + "/" + quizName), {status: "online"})
+            location.reload();
+          });
+   
+          quizDiv.appendChild(editButton);
+          quizDiv.appendChild(deleteButton);
+          quizDiv.appendChild(offlineButton);
+          quizDiv.appendChild(uploadButton);
+          admin_editContainer.appendChild(quizDiv);
+        }    
+    }
+  })
 }
 
 //function that transfers user to quiz
@@ -533,7 +763,6 @@ if (window.location.toString().includes("play_quiz_page")) {
 
 //function that prepares the quiz start page
 if (window.location.toString().includes("start_page")) {
-  console.log("test");
   onValue(quizRef, (snapshot) => {
     const data = snapshot.val();
 
@@ -623,7 +852,6 @@ if (window.location.toString().includes("home")) {
       }
 
       filterQuizzesByTheme(filterList.value)
-
       filterList.addEventListener('change', function() {
           const selectedTheme = this.value;
             filterQuizzesByTheme(selectedTheme);
@@ -638,11 +866,13 @@ function filterQuizzesByTheme(selectedTheme) {
 
     document.getElementById("filter_title").innerHTML = ("Current filter : " + selectedTheme)
 
-    if(selectedTheme == "all" || selectedTheme == ""){
+    if(selectedTheme == "all"  || selectedTheme == ""){
       for (let userID in data){
         const userQuizzes = data[userID];
         for(let quizName in userQuizzes){
-          generateQuiz(userID, quizName);
+          if(userQuizzes[quizName].status == "online"){
+            generateQuiz(userID, quizName);
+          }
         }
       } 
     }else{
@@ -650,7 +880,7 @@ function filterQuizzesByTheme(selectedTheme) {
         const userQuizzes = data[userID];
         for (let quizName in userQuizzes) {
           const quiz = userQuizzes[quizName];
-          if (quiz.theme === selectedTheme) {
+          if (quiz.theme === selectedTheme && userQuizzes[quizName].status == "online") {
             generateQuiz(userID, quizName);
           }
         }

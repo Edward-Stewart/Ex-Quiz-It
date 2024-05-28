@@ -115,6 +115,10 @@ button[type="submit"]:hover {
             <label for="quizDescription">Description:</label>
             <textarea id="quiz_description" name="quizDescription" rows="4" required></textarea>
         </div>
+        <div class="form-group">
+            <label>Image</label>
+            <input type="file" class="inputFile" id="fileInp" accept="image/png, image/jpeg" required>
+        </div>
         <div>
             <select id="themes"></select>
         </div>

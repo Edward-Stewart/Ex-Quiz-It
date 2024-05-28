@@ -33,15 +33,11 @@ margin: auto;
 <button type="submit" id="theme_submit">submit</button>
 </form>
 
+<h2>Quizzes</h2>
+<div id="admin_editcontent"></div>
 
 </body>
 </html>
-
-
-
-
-
-
 
 <?php
 include_once('View/footer.php');
