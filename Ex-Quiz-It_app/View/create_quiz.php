@@ -13,21 +13,17 @@ body {
 }
 
 .container {
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    position: sticky;
-    
-}
-
-.quiz-form {
     background-color: #fff;
     padding: 30px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 600px; /* Wider form */
-    position: absolute;
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
 }
+
+
+
 
 h1 {
     text-align: center;
@@ -54,11 +50,10 @@ textarea {
     box-sizing: border-box;
 }
 
-
 .answer-group {
     display: flex;
-    flex-direction: row; 
-    justify-content: space-between;  
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .answer-column {
@@ -66,35 +61,47 @@ textarea {
     margin-right: 10px;
 }
 
-button[type="submit"] {
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#themes {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#quiz_submit {
+    background-color: #007bff; /* Blue color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: calc(50% - 5px); /* Adjusted width */
+    box-sizing: border-box;
+}
+
+#add_question {
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 20px;
+    width: calc(50% - 5px); /* Adjusted width */
+    box-sizing: border-box;
 }
 
-button[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-#add_question {
-    background-color: #4da8f7;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 300px;
-}
-
-#add_question:hover {
-    background-color: #3ba0f7;
-}
-
-#themes{
-    width: 30%;
+#button_container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    width: 100%;
 }
 
 </style>
@@ -114,10 +121,6 @@ button[type="submit"]:hover {
         <div class="form-group">
             <label for="quizDescription">Description:</label>
             <textarea id="quiz_description" name="quizDescription" rows="4" required></textarea>
-        </div>
-        <div class="form-group">
-            <label>Image</label>
-            <input type="file" class="inputFile" id="fileInp" accept="image/png, image/jpeg" required>
         </div>
         <div>
             <select id="themes"></select>
@@ -153,9 +156,11 @@ button[type="submit"]:hover {
                 </div>
             </div>
         </div>
+    </form>
+    <div id="button container">
         <button type="submit" id="quiz_submit">Create Quiz</button>
         <button id="add_question" type="button">MORE+</button>
-    </form>
+    </div>
 </div>
 </body>
 
