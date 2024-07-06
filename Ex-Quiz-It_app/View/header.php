@@ -24,7 +24,7 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="index.php?action=home">Home</a>
+            <a class="nav-link active" aria-current="page" href="index.php?action=home">HomeHome</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="ConnectionLink" href="index.php?action=connect_page">Connection Page</a>
